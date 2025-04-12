@@ -35,12 +35,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/rnstyles"
+    "url": "https://github.com/KushSoni223/rnstyles"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/rnstyles/issues"
+    "url": "https://github.com/KushSoni223/rnstyles/issues"
   },
-  "homepage": "https://github.com/yourusername/rnstyles#readme",
+  "homepage": "https://github.com/KushSoni223/rnstyles#readme",
   "devDependencies": {
     "typescript": "^5.8.3",
     "@types/node": "^22.14.1"
