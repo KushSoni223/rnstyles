@@ -23,3 +23,33 @@ To install `rnstyles`, you can use **npm** or **yarn**.
 ```bash
 npm install rnstyles
 ```
+
+#### Usage:
+
+import { applyStyles } from 'rnstyles';
+
+or
+
+import { tw } from 'rnstyles';
+
+in react/next
+
+const MyComponent = () => {
+return (
+
+<div className={applyStyles('bg-blue-500 text-white p-4 rounded-md')}>
+Hello, World!
+</div>
+);
+};
+
+with responsive design:
+
+const MyComponent = () => {
+return (
+
+<div className={applyStyles('sm:bg-red-500 md:bg-green-500 lg:bg-blue-500')}>
+Responsive Styled Component
+</div>
+);
+};
