@@ -91,7 +91,8 @@ const parseClasses = (
 
     if (className.startsWith("text-")) {
       const fontSizeKey = className.split("-")[1] as keyof FontSizes;
-      styles.fontSize = fontSizes[fontSizeKey] || fontSizeKey;
+      const fallbackSize = Number(fontSizeKey); // convert "16" to 16
+      styles.fontSize = fontSizes[fontSizeKey] ?? fallbackSize;
     }
   });
 
