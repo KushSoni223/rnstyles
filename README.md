@@ -45,3 +45,17 @@ npm install rnstyles
      );
    };
    ```
+
+2. **React Example**:
+
+   ```javascript
+   import { tw } from "rnstyles";
+
+   const MyComponent = () => {
+     return (
+       <div className={tw("bg-blue-500 text-white p-4 rounded-md")}>
+         Hello, World!
+       </div>
+     );
+   };
+   ```
