@@ -1,0 +1,54 @@
+{
+  "name": "rnstyles",
+  "version": "1.0.0",
+  "description": "A lightweight Tailwind-style utility-based styling library for React Native, React, Next.js, Expo, and Electron. Supports full class names, shorthand (Tailwind-style), responsive styles, custom fonts, and dark/light modes.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.js",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "prepublishOnly": "npm run build",
+    "test": "echo \"No tests yet\""
+  },
+  "keywords": [
+    "react-native",
+    "tailwind",
+    "utility-first",
+    "responsive-styles",
+    "react",
+    "expo",
+    "style-library",
+    "typescript",
+    "dark-mode",
+    "light-mode",
+    "rnstyles"
+  ],
+  "author": "kushsoni-rndev",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/rnstyles"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/rnstyles/issues"
+  },
+  "homepage": "https://github.com/yourusername/rnstyles#readme",
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "@types/node": "^22.14.1"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=14"
+  }
+}
