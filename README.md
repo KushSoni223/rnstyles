@@ -26,30 +26,22 @@ npm install rnstyles
 
 #### Usage:
 
-import { applyStyles } from 'rnstyles';
+### **What's Added:**
 
-or
+1. **React Native Example**: A sample React Native component using `rnstyles` to apply utility classes (`applyStyles` and `tw`).
 
-import { tw } from 'rnstyles';
+   ```javascript
+   import React from "react";
+   import { View, Text } from "react-native";
+   import { applyStyles } from "rnstyles";
 
-in react/next
-
-const MyComponent = () => {
-return (
-
-<div className={applyStyles('bg-blue-500 text-white p-4 rounded-md')}>
-Hello, World!
-</div>
-);
-};
-
-with responsive design:
-
-const MyComponent = () => {
-return (
-
-<div className={applyStyles('sm:bg-red-500 md:bg-green-500 lg:bg-blue-500')}>
-Responsive Styled Component
-</div>
-);
-};
+   const MyComponent = () => {
+     return (
+       <View style={applyStyles("bg-blue-500 p-4")}>
+         <Text style={applyStyles("text-white font-serif")}>
+           Hello, React Native World!
+         </Text>
+       </View>
+     );
+   };
+   ```
