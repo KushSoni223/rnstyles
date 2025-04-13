@@ -1,12 +1,17 @@
 import parseClasses from "./tailwindParser";
+import { TailwindClasses } from "./types";
 
-export * from "./tailwindParser";
-
-export function tw(classNames: string) {
-  return parseClasses(classNames);
+/**
+ * Universal Tailwind-like utility
+ * - Parses Tailwind classes to React Native styles
+ */
+export function tw(classNames: TailwindClasses | TailwindClasses[]): any {
+  const input = Array.isArray(classNames) ? classNames.join(" ") : classNames;
+  return parseClasses(input);
 }
 
 export const rnStyle = tw;
-export const webStyle = tw;
+
+(globalThis as any).tw = tw;
 
 export default tw;
