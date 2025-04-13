@@ -1,6 +1,6 @@
 {
   "name": "@kushsoni-rndev/rnstyles",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A lightweight Tailwind-style utility-based styling library for React Native, React, Next.js, Expo, and Electron. Supports full class names, shorthand (Tailwind-style), responsive styles, custom fonts, and dark/light modes.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
