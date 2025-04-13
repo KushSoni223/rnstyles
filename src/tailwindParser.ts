@@ -43,12 +43,13 @@ const parseClasses = (
       styles.fontFamily = fonts[fontKey] || fonts.sans;
     }
 
-    if (cls.startsWith("text-") || cls.startsWith("bg-")) {
-      const parts = cls.split("-");
-      const colorKey = parts[1] as keyof Colors;
-      const colorType = cls.startsWith("text-") ? "color" : "backgroundColor";
-      const shade = parts[2];
-      const baseColor = colors[colorKey];
+    if (/^(text|bg)-/.test(cls)) {
+      const [, type, colorKey, shade] =
+        cls.match(/^(text|bg)-([a-zA-Z]+)-?(\d+)?$/) || [];
+
+      const colorType = type === "text" ? "color" : "backgroundColor";
+      const baseColor = colors[colorKey as keyof Colors];
+
       if (typeof baseColor === "string") {
         styles[colorType] = baseColor;
       } else if (typeof baseColor === "object" && shade) {
