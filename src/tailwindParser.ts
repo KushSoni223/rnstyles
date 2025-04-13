@@ -15,14 +15,19 @@ import {
 } from "./tailwindUtils";
 
 export type ParsedStyles = {
-  [key: string]: string | number | boolean | { [key: string]: boolean };
+  [key: string]:
+    | string
+    | number
+    | boolean
+    | { [key: string]: boolean }
+    | ParsedStyles;
 };
 
 const parseClasses = (
   classNames: string,
   theme: keyof Themes = "light"
 ): ParsedStyles => {
-  const classList = classNames.split(" ");
+  const classList = classNames.split(/\s+/);
   const styles: ParsedStyles = {};
 
   const currentTheme =
@@ -31,25 +36,49 @@ const parseClasses = (
   styles.color = currentTheme.color;
 
   classList.forEach((cls: string) => {
+    if (!cls.trim()) return;
+
     if (cls.startsWith("font-")) {
       const fontKey = cls.split("-")[1] as keyof Fonts;
       styles.fontFamily = fonts[fontKey] || fonts.sans;
     }
 
     if (cls.startsWith("text-") || cls.startsWith("bg-")) {
-      const colorKey = cls.split("-")[1] as keyof Colors;
+      const parts = cls.split("-");
+      const colorKey = parts[1] as keyof Colors;
       const colorType = cls.startsWith("text-") ? "color" : "backgroundColor";
-      styles[colorType] = colors[colorKey] || colorKey;
+      const shade = parts[2];
+      const baseColor = colors[colorKey];
+      if (typeof baseColor === "string") {
+        styles[colorType] = baseColor;
+      } else if (typeof baseColor === "object" && shade) {
+        styles[colorType] = baseColor[shade as keyof typeof baseColor];
+      }
     }
 
     if (cls.startsWith("p-")) {
-      const paddingValue = cls.split("-")[1] as unknown as keyof Spacing;
-      styles.padding = spacing[paddingValue] || paddingValue;
+      const paddingValue = cls.split("-")[1];
+      styles.padding =
+        spacing[paddingValue as unknown as keyof Spacing] ??
+        Number(paddingValue);
     }
 
     if (cls.startsWith("m-")) {
-      const marginValue = cls.split("-")[1] as unknown as keyof Spacing;
-      styles.margin = spacing[marginValue] || marginValue;
+      const marginValue = cls.split("-")[1];
+      styles.margin =
+        spacing[marginValue as unknown as keyof Spacing] ?? Number(marginValue);
+    }
+
+    if (cls.startsWith("w-")) {
+      const widthValue = cls.split("-")[1];
+      styles.width =
+        spacing[widthValue as unknown as keyof Spacing] ?? Number(widthValue);
+    }
+
+    if (cls.startsWith("h-")) {
+      const heightValue = cls.split("-")[1];
+      styles.height =
+        spacing[heightValue as unknown as keyof Spacing] ?? Number(heightValue);
     }
 
     if (cls.startsWith("justify-")) {
@@ -69,7 +98,7 @@ const parseClasses = (
 
     if (/^(m[trblxy]?)-(\d+)$/.test(cls)) {
       const [, dir, val] = cls.match(/^(m[trblxy]?)-(\d+)$/)!;
-      const v = spacing[val as unknown as keyof typeof spacing];
+      const v = spacing[val as unknown as keyof typeof spacing] ?? Number(val);
       switch (dir) {
         case "m":
           styles.margin = v;
@@ -99,10 +128,8 @@ const parseClasses = (
 
     if (/^(p[trblxy]?)-(\d+)$/.test(cls)) {
       const [, dir, val] = cls.match(/^(p[trblxy]?)-(\d+)$/)!;
-
       const spacingValue =
         spacing[val as unknown as keyof typeof spacing] ?? Number(val);
-
       switch (dir) {
         case "p":
           styles.padding = spacingValue;
@@ -132,13 +159,11 @@ const parseClasses = (
 
     if (/^gap(-(x|y))?-(\d+)$/.test(cls)) {
       const match = cls.match(/^gap(?:-(x|y))?-(\d+)$/);
-
       if (Array.isArray(match)) {
         const direction = match[1] as "x" | "y" | undefined;
         const key = match[2];
         const value =
           spacing[key as unknown as keyof typeof spacing] ?? Number(key);
-
         if (direction === "x") {
           styles.columnGap = value;
         } else if (direction === "y") {
@@ -149,17 +174,9 @@ const parseClasses = (
       }
     }
 
-    if (cls === "flex") {
-      styles.display = "flex";
-    }
-
-    if (cls === "flex-row") {
-      styles.flexDirection = "row";
-    }
-
-    if (cls === "flex-col") {
-      styles.flexDirection = "column";
-    }
+    if (cls === "flex") styles.display = "flex";
+    if (cls === "flex-row") styles.flexDirection = "row";
+    if (cls === "flex-col") styles.flexDirection = "column";
 
     if (/^items-(start|center|end)$/.test(cls)) {
       const alignments = {
@@ -205,6 +222,51 @@ const parseClasses = (
       styles.resizeMode = mode === "center" ? "center" : mode;
     }
 
+    if (/^border-(\d+)$/.test(cls)) {
+      const borderWidth = cls.match(/^border-(\d+)$/)![1];
+      styles.borderWidth = Number(borderWidth);
+    }
+
+    if (/^border-(solid|dashed|dotted)$/.test(cls)) {
+      styles.borderStyle = cls.split("-")[1];
+    }
+
+    if (cls.startsWith("border-")) {
+      const parts = cls.split("-");
+      if (parts.length === 3) {
+        const [, color, shade] = parts;
+        const colorObj = colors[color as keyof typeof colors];
+        if (typeof colorObj === "object") {
+          const shadeValue = colorObj[shade as keyof typeof colorObj];
+          if (shadeValue) styles.borderColor = shadeValue;
+        }
+      } else {
+        const colorKey = cls.replace("border-", "");
+        if (colors[colorKey as keyof typeof colors]) {
+          styles.borderColor = colors[colorKey as keyof typeof colors];
+        }
+      }
+    }
+
+    if (/^rounded(-[a-z]+)?$/.test(cls)) {
+      const radiusMap = {
+        sm: 2,
+        md: 4,
+        lg: 8,
+        xl: 12,
+        full: 9999,
+      };
+      const parts = cls.split("-");
+      const size = parts[1] || "md";
+      styles.borderRadius = radiusMap[size as keyof typeof radiusMap] ?? 4;
+    }
+
+    if (cls.startsWith("text-")) {
+      const fontSizeKey = cls.split("-")[1] as keyof FontSizes;
+      const fallbackSize = Number(fontSizeKey);
+      styles.fontSize = fontSizes[fontSizeKey] ?? fallbackSize;
+    }
+
     if (
       cls.startsWith("sm:") ||
       cls.startsWith("md:") ||
@@ -216,14 +278,11 @@ const parseClasses = (
         if (!styles[screenSize]) {
           styles[screenSize] = {};
         }
-        (styles[screenSize] as Record<string, boolean>)[classNamePart] = true;
+        Object.assign(
+          styles[screenSize] as ParsedStyles,
+          parseClasses(classNamePart, theme)
+        );
       }
-    }
-
-    if (cls.startsWith("text-")) {
-      const fontSizeKey = cls.split("-")[1] as keyof FontSizes;
-      const fallbackSize = Number(fontSizeKey);
-      styles.fontSize = fontSizes[fontSizeKey] ?? fallbackSize;
     }
   });
 
